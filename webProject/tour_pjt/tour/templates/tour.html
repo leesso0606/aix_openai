@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script  src="https://code.jquery.com/jquery-latest.min.js"></script>
+    <title>tour 검색</title>
+
+    <script>
+        function tBtn(){
+            const t_input = $("#t_input").val();
+            $.ajax({
+                    url:'/tour/ajax_data/',                // 보내는링크주소
+                    type:'post',                             // 전송방식
+                    headers:{'X-CSRFToken':'{{csrf_token}}'},// csrf_token
+                    data:{'data':t_input},                   // html에서 django보내는 데이터 : data라는 이름으로 보내고 있음.
+                    dataType:'json',                         // 받는데이터 타입 : json,xml,text
+                    success:function(data){
+                        alert('성공');
+                        console.log(data);
+                        $("#txt_input").text(t_input)
+                        $("#content").text(data.result)
+                    },
+                    error:function(){
+                        alert('실패');
+                    }
+                    });//ajax
+
+        }// tBtn()-> 검색버튼
+    </script>
+</head>
+<body>
+    <h1>tour 검색</h1>
+    <label> 가고 싶은 여행지를 입력하세요. </label>
+    <br>
+    <input type='text' name='t_input' id='t_input'>
+    <button type='button' onclick='tBtn()'>검색</button>
+    <br>
+    <br>
+    <div>
+        <label id='txt_input'></label>
+        <textarea name='content' id='content'></textarea>
+    </div>
+</body>
+</html>
