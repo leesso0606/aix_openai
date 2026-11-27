@@ -51,6 +51,9 @@ delete from member;
 -- member테이블에서 gender='여자'인 데이터만 삭제
 delete from member where gender='여자'
 
+-- 테이블 컬럼명과 타입 확인 : desc 컬럼명;
+desc member;
+
 -- 데이터 되돌리기 : 커밋을 안했다면
 rollback;
 
@@ -74,3 +77,61 @@ bindent number(4),
 bdate date,
 bfile varchar2(100)
 );
+
+-- number : +,-,*,/ 가능
+-- date: +,- 가능
+-- varchar2 : 사칙연산 안됨.
+select '가' || '나' from dual; --가나 : || 가 print('가'+'나') 와 같음
+select emp_name+email from employees; -- 안됨
+
+--  임시 컬럼(약칭)
+-- salary*1342 라는 컬럼을 k_salary로 약칭 가능.
+select emp_name, salary , salary*1342 as k_salary from employees;
+select emp_name, salary , salary*1342 k_salary from employees;
+
+-- !!!! null값에는 사칙연산 불가능 ( 쉽게 무한이라고 생각하면 편함)
+-- commission_pct가 null 이라면 salary*commission_pct도 null이 나옴, 즉 월급(salary)도 없다고 뜨는것.
+select salary, commission_pct,salary*commission_pct from employees; 
+
+-- 하지만 nvi(컬럼,0) : null값이 있을때 0으로 만들어 주면
+-- commission_pct가 null이라도 월급(salary)는 나옴
+select salary, commission_pct, salary+nvl(salary*commission_pct,0) from employees;
+
+-- ""안에서는 특수문자, 한글, 띄어쓰기 등 사용할수있음. 다만 띄어쓰기는 자제
+select salary, commission_pct, salary+nvl(salary*commission_pct,0)"실제월급" from employees;
+
+--distinct : 중복제거
+-- department_id에서 중복되는 데이터 제거 가능
+select distinct(department_id) from employees;
+
+--where 조건절 : 비교, <,<=,>,>=
+--두개 이상일때는 and, or 가능
+
+-- employees 테이블에서 salary가 5000 초과인 행 중 emp_name,salary 컬럼 데이터만 출력하시오.
+select emp_name,salary from employees
+where salary>5000;
+
+-- employees 테이블에서 salary가 6000이상, department_id가 50인 데이터 중 employee_id, salary 컬럼데이터만 출력하시오.
+select employee_id, salary from employees
+where salary >= 6000 and department_id=50;
+
+--급여가 4000 이하의 사원번호 사원이름, 급여를 출력하시오
+select employee_id, emp_name, salary from employees
+where salary<=4000;
+
+--부서번호가 10이거나 30이거나 100인 사원을 출력하시오
+select * from employees
+where department_id=10 or department_id=30 or department_id=100;
+
+--날짜비교
+select hire_date from employees
+where hire_date>'07/01/01';
+select hire_date from employees
+where hire_date>'2007/01/01';
+select hire_date from employees
+where hire_date>='2007-01-01' and hire_date<='07/12/31';
+
+--number : 숫자 데이터 들어감(정수, 실수) -> number(4,2):99.99, number(4):9999
+--char : 고정길이 문자 데이터 저장. -> char(20)이면 5글자만 저장되어도 20자리무조건 확보, 데이터 낭비대신 빠름
+--varchar2 : 가변적인 길이 문자열-> varchar2(20)이면 5글자만 저장있으면 들어가있는 자리만 읽음, 공간낭비없는 대신 느림
+--date : 날짜
